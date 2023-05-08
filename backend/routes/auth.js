@@ -1,25 +1,30 @@
 const express = require("express");
 const passport = require("passport");
-const { CLIENT_URL } = require("../constants");
+const {
+  CLIENT_URL,
+  TWITTER_SCOPES,
+  LINKEDIN_SCOPES,
+  GOOGLE_SCOPES,
+} = require("../constants");
 const router = express.Router();
 
 // Generate Authorization URL and redirect
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email", "openid"] })
+  passport.authenticate("google", { scope: GOOGLE_SCOPES })
 );
 
 router.get(
   "/twitter",
   passport.authenticate("twitter", {
-    scope: ["tweet.read", "users.read"],
+    scope: TWITTER_SCOPES,
   })
 );
 
 router.get(
   "/linkedin",
   passport.authenticate("linkedin", {
-    scope: ["r_liteprofile", "r_emailaddress"],
+    scope: LINKEDIN_SCOPES,
   })
 );
 

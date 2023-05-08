@@ -18,7 +18,7 @@ const {
   GoogleOAuth2Strategy,
   TwitterOAuth2Strategy,
   LinkedInOAuth2Strategy,
-} = require("./strategies/oauth2-strategy");
+} = require("./strategies");
 const { User } = require("./models/user");
 
 connectDB();
@@ -36,7 +36,7 @@ app.use(
 );
 app.use(
   session({
-    secret: "Rwqapoqqwe@#1111bcbc",
+    secret: process.env.COOKIE_SECRET,
     resave: false,
     saveUninitialized: false,
   })

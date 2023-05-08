@@ -16,12 +16,17 @@ const UserSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
     },
     provider: {
       type: String,
     },
     password: {
+      type: String,
+    },
+    username: {
+      type: String,
+    },
+    profile_image: {
       type: String,
     },
   },

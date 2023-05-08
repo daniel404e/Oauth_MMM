@@ -9,7 +9,7 @@ exports.OAUTH2_CREDENTIALS = {
     clientId: process.env.TWITTER_CLIENT_ID,
     clientSecret: process.env.TWITTER_CLIENT_SECRET,
     authUrl: "https://twitter.com/i/oauth2/authorize",
-    tokenUrl: "https://api.twitter.com/oauth2/token",
+    tokenUrl: "https://api.twitter.com/2/oauth2/token",
   },
   LINKEDIN: {
     clientId: process.env.LINKEDIN_CLIENT_ID,
