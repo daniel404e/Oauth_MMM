@@ -1,16 +1,8 @@
-import { Link } from "react-router-dom";
 import { SocialLogin } from "./SocialLogin";
 
 export function LoginForm() {
   return (
     <div>
-      <Link className="m-4" to="/">
-        Home
-      </Link>
-      |
-      <Link className="m-4" to="/dashboard">
-        Dashboard (Private Route)
-      </Link>
       <div className="container h-screen flex justify-center items-center">
         <div className="p-8 bg-white rounded-lg max-w-6xl pb-10">
           <div className="flex justify-center mb-4 text-black">
