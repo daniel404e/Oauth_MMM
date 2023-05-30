@@ -29,6 +29,9 @@ const UserSchema = new mongoose.Schema(
     profile_image: {
       type: String,
     },
+    phoneNumber: {
+      type: String,
+    },
   },
   {
     statics: {
@@ -42,6 +45,10 @@ const UserSchema = new mongoose.Schema(
           const newUser = await this.create(serializedSocialProfile);
           return newUser;
         }
+      },
+      async getUserDocument(id) {
+        const user = await this.findOne({ $or: [{ socialId: id }, { id }] });
+        return user;
       },
     },
   }

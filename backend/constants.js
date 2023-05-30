@@ -12,4 +12,7 @@ module.exports = {
   ],
   GOOGLE_SCOPES: ["profile", "email", "openid"],
   LINKEDIN_SCOPES: ["r_liteprofile", "r_emailaddress"],
+  DRAFT_SOCIAL_PROFILE: {
+    status: "draft",
+  },
 };
