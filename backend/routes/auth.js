@@ -6,6 +6,10 @@ const {
   LINKEDIN_SCOPES,
   GOOGLE_SCOPES,
 } = require("../constants");
+const { isAuthenticated } = require("../middleware/isAuthenticated");
+const { User } = require("../models/user");
+const { body } = require("express-validator");
+const validate = require("../middleware/validate");
 const router = express.Router();
 
 // Generate Authorization URL and redirect
@@ -30,31 +34,38 @@ router.get(
 
 // End redirect
 
-router.get("/success", (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json({
-      message: "User Authenticated",
-      user: req.user,
-    });
-  } else
-    res.status(400).json({
-      message: "User Not Authenticated",
-      user: null,
-    });
+router.get("/success", isAuthenticated, (req, res) => {
+  res.json({
+    message: "User Authenticated",
+    user: req.user,
+  });
 });
 
-router.get("/logout", (req, res) => {
-  if (req.isAuthenticated()) {
-    console.log("Logout");
-    req.logout({ keepSessionInfo: false }, (error) => {
-      if (error) {
-        console.log("Cannot log out:", error);
-      }
-      console.log("Logged out");
-    });
-  } else {
-    return res.json({ message: "Already logout" });
+router.post(
+  "/oauth-complete",
+  isAuthenticated,
+  body("phoneNumber").isMobilePhone(),
+  validate,
+  async (req, res) => {
+    const { phoneNumber } = req.body;
+    const draftUser = req.user;
+    delete draftUser.status;
+    const user = await new User({
+      ...draftUser,
+      phoneNumber,
+    }).save();
+    res.json({ ...user.toJSON() });
   }
+);
+
+router.get("/logout", isAuthenticated, (req, res) => {
+  console.log("Logout");
+  req.logout({ keepSessionInfo: false }, (error) => {
+    if (error) {
+      console.log("Cannot log out:", error);
+    }
+    console.log("Logged out");
+  });
   res.redirect(CLIENT_URL);
 });
 

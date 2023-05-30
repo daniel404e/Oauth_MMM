@@ -1,6 +1,10 @@
 const OAuth2Strategy = require("passport-oauth2");
 const { OAUTH2_CREDENTIALS } = require("../oauth2-config");
-const { API_ENDPOINT, LINKEDIN_SCOPES } = require("../constants");
+const {
+  API_ENDPOINT,
+  LINKEDIN_SCOPES,
+  DRAFT_SOCIAL_PROFILE,
+} = require("../constants");
 const { User } = require("../models/user");
 
 // LinkedIn
@@ -16,8 +20,13 @@ const LinkedInOAuth2Strategy = new OAuth2Strategy(
   },
   async function (accessToken, refreshToken, profile, cb) {
     try {
-      const user = await User.getOrCreateSocialUser(profile);
-      cb(null, user);
+      const userDocument = await User.getUserDocument(profile.socialId);
+      if (userDocument) {
+        const user = userDocument.toObject();
+        cb(null, user);
+      } else {
+        cb(null, profile);
+      }
     } catch (error) {
       cb(error, null);
     }
@@ -42,6 +51,7 @@ LinkedInOAuth2Strategy.userProfile = async (accessToken, done) => {
         fullName: json.localizedFirstName + " " + json.localizedLastName,
         email: "",
         provider: "linkedin",
+        ...DRAFT_SOCIAL_PROFILE,
       };
 
       const emailRes = await fetch(

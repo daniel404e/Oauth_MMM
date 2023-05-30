@@ -11,6 +11,7 @@ import { env } from "../constants";
  * login: (credentials: Record<string, any>) => void;
  * signUp: (credentials: Record<string, any>) => void;
  * logout: () => void;
+ * setUser: React.Dispatch<React.SetStateAction<Record<string, any> | undefined>>
  *  }} SocialAuthContextType
  */
 
@@ -50,7 +51,6 @@ export const SocialAuthProvider = (props) => {
           throw new Error("authentication has been failed!");
         })
         .then((resObject) => {
-          console.log(`🚀 -> .then -> resObject:`, resObject);
           setUser(resObject.user);
         })
         .catch((err) => {
@@ -123,6 +123,7 @@ export const SocialAuthProvider = (props) => {
       login,
       signUp,
       logout,
+      setUser,
     }),
     [user, loading, error]
   );

@@ -1,6 +1,10 @@
 const OAuth2Strategy = require("passport-oauth2");
 const { OAUTH2_CREDENTIALS } = require("../oauth2-config");
-const { API_ENDPOINT, TWITTER_SCOPES } = require("../constants");
+const {
+  API_ENDPOINT,
+  TWITTER_SCOPES,
+  DRAFT_SOCIAL_PROFILE,
+} = require("../constants");
 const { User } = require("../models/user");
 
 const CONFIDENTIAL_CLIENT_AUTH_TOKEN = Buffer.from(
@@ -23,8 +27,13 @@ const TwitterOAuth2Strategy = new OAuth2Strategy(
   },
   async function (accessToken, refreshToken, profile, cb) {
     try {
-      const user = await User.getOrCreateSocialUser(profile);
-      cb(null, user);
+      const userDocument = await User.getUserDocument(profile.socialId);
+      if (userDocument) {
+        const user = userDocument.toObject();
+        cb(null, user);
+      } else {
+        cb(null, profile);
+      }
     } catch (error) {
       cb(error, null);
     }
@@ -50,6 +59,7 @@ TwitterOAuth2Strategy.userProfile = (accessToken, done) => {
         provider: "twitter",
         username: twitterProfile.username,
         profile_image: twitterProfile.profile_image_url,
+        ...DRAFT_SOCIAL_PROFILE,
       };
       done(null, profile);
     })
